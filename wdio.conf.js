@@ -10,7 +10,7 @@ exports.config = {
     capabilities: [
         {
             "platformName": "Android",
-            "appium:deviceName": "Pixel_5_API_34",
+            "appium:deviceName": "Pixel_6_Pro_API_34",
             "appium:platformVersion": "14.0",
             "appium:orientation": "PORTRAIT",
             "appium:automationName": "UiAutomator2",
@@ -18,7 +18,7 @@ exports.config = {
             "appium:autoAcceptAlerts": true,
             "appium:autoGrantPermissions": true,
             "appium:newCommandTimeout": 10000
-        }
+        }, 
     ],
     logLevel: 'info',
     baseUrl: '',

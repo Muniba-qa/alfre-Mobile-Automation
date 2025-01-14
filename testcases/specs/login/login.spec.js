@@ -2,7 +2,7 @@ const {
   joinOurWaitList,
   createGroup,
   loginToAccount
-} = require("../pageObjects/Components/login.page.js");
+} = require("../../pageObjects/loginPage/login.page.js");
 
 describe("Login", () => {
 
@@ -12,7 +12,7 @@ describe("Login", () => {
 
   it.only(`Group data needs to refresh with change with "pull to refresh"`, async () => {
     await loginToAccount();
-    await createGroup();
+    await createGroup("private");
   });
 
 });
