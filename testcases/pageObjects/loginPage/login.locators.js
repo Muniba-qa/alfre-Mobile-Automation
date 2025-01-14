@@ -73,26 +73,65 @@ class LoginLocators {
     return $(`//android.view.ViewGroup[contains(@content-desc, 'Choose from your photos')]/android.widget.TextView[2]`);
   }
   get pickerDescTxt() { return $('android=new UiSelector().resourceId("com.google.android.providers.media.module:id/privacy_text")'); }
-   
+
   get videoFromPicker() { return $('android=new UiSelector().resourceId("com.google.android.providers.media.module:id/icon_thumbnail").instance(0)'); }
   get tickBtnEditSCreen() {
-     return $('android=new UiSelector().resourceId("com.redbox.redboxme:id/menu_crop")'); 
-    }
+    return $('android=new UiSelector().resourceId("com.redbox.redboxme:id/menu_crop")');
+  }
   get nextBtn() {
-     return $('//android.view.ViewGroup[@content-desc="NEXT"]/android.widget.TextView'); 
-    }
+    return $('android=new UiSelector().text("NEXT")');
+  }
+  get saveBtn() {
+    return $('android=new UiSelector().text("SAVE")');
+  }
   get allCategoriesBtn() {
-     return $('//android.view.ViewGroup[@content-desc="All"]/android.widget.TextView'); 
-    }
-    
+    return $('//android.view.ViewGroup[@content-desc="All"]/android.widget.TextView');
+  }
+
   get createGroupBtn() {
-     return $('//android.view.ViewGroup[@content-desc="CREATE GROUP"]'); 
-    }
-    
+    return $('android=new UiSelector().text("CREATE GROUP")');
+  }
+
   get seeMyGroupBtn() {
-     return $('//android.view.ViewGroup[@content-desc="SEE MY GROUP PROFILE"]/android.widget.TextView'); 
-    }
-    
+    return $('//android.view.ViewGroup[@content-desc="SEE MY GROUP PROFILE"]/android.widget.TextView');
+  }
+
+  get backArrowBtn() {
+    return $('//android.view.ViewGroup[@resource-id="back-button"]');
+  }
+
+  get groupsTabHomePage() {
+    return $('//android.widget.Button[@content-desc="Groups"]/android.widget.TextView');
+  }
+  get groupSwitch() {
+    return $('//android.view.ViewGroup//android.widget.Switch');
+  }
+  
+  get privateText() {
+    return $('android=new UiSelector().text("PRIVATE")');
+  }
+  
+  get groupMoreOptionBtn() {
+    return $('(//android.view.ViewGroup//android.view.ViewGroup//com.horcrux.svg.SvgView)[1]');
+  }
+  get editProfileOption() {
+    return $('android=new UiSelector().text("Edit Profile")');
+  }
+  get thoughtsTab() {
+    return $('android=new UiSelector().text("Thoughts")');
+  }
+  get groupScrollElement() {
+    return $('(//android.view.ViewGroup//android.widget.ScrollView//android.view.ViewGroup)[1]');
+  }
+  // groups tab
+  
+  //// Home search button
+  //android.widget.TextView[contains(@text, "My Community")]/preceding-sibling::android.view.ViewGroup//android.widget.TextView
+
+  //android.widget.EditText[@text="Search connections"] fill
+  //android.widget.TextView[contains(@text, "My groups")]
+  //android.view.ViewGroup[@content-desc="Electric it"]
+  // 
 }
 
 module.exports = LoginLocators;

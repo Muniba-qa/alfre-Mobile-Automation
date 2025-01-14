@@ -2,7 +2,7 @@ const {
   joinOurWaitList,
   createGroup,
   loginToAccount
-} = require("../pageObjects/Components/login.page.js");
+} = require("../../pageObjects/loginPage/login.page.js");
 
 describe("Login", () => {
 

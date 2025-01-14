@@ -10,15 +10,15 @@ exports.config = {
     capabilities: [
         {
             "platformName": "Android",
-            "appium:deviceName": "Pixel_5_API_34",
-            "appium:platformVersion": "14.0",
+            "appium:deviceName": "Pixel_5_API_35",
+            "appium:platformVersion": "15.0",
             "appium:orientation": "PORTRAIT",
             "appium:automationName": "UiAutomator2",
             "appium:app": "apps/application-768a829c-52c0-452f-b00f-b38ad713f10a.apk",
             "appium:autoAcceptAlerts": true,
             "appium:autoGrantPermissions": true,
             "appium:newCommandTimeout": 10000
-        }
+        }, 
     ],
     logLevel: 'info',
     baseUrl: '',
