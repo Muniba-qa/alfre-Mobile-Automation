@@ -20,7 +20,8 @@ async function waitForElementDisplayed(element, buttonName) {
 
 async function scrollInsideElement(elementSelector, scrollRatio = 0.4, duration = 1200) {
     const element = await $(elementSelector);
-    const { x, y, width, height } = await element.getRect();
+    const { x, y } = await element.getLocation(); 
+    const { width, height } = await element.getSize(); 
     const midpoint = {
         x: Math.floor(width * 0.5),
         y: Math.floor(height * 0.5),

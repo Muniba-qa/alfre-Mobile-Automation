@@ -12,7 +12,8 @@ describe("Login", () => {
 
   it.only(`Group data needs to refresh with change with "pull to refresh"`, async () => {
     await loginToAccount();
-    await createGroup();
+    await createGroup("private");
+    await createGroup("public");
   });
 
 });

@@ -46,23 +46,7 @@ class LoginLocators {
     return $(`//android.view.ViewGroup[@content-desc="SEND CODE"]/android.widget.TextView`)
   }
   get otpInput1() {
-    return $(`//android.view.ViewGroup[@content-desc="Login by e-mail, We sent an e-mail with a 5-digit code to: qa2@alfredus.co, Insert your code and click on “Submit Verification Code”. If you did not receive your code yet, please click on resend"]/android.widget.EditText[1]`)
-  }
-
-  get otpInput2() {
-    return $(`//android.view.ViewGroup[@content-desc="Login by e-mail, We sent an e-mail with a 5-digit code to: qa2@alfredus.co, Insert your code and click on “Submit Verification Code”. If you did not receive your code yet, please click on resend"]/android.widget.EditText[2]`)
-  }
-
-  get otpInput3() {
-    return $(`//android.view.ViewGroup[@content-desc="Login by e-mail, We sent an e-mail with a 5-digit code to: qa2@alfredus.co, Insert your code and click on “Submit Verification Code”. If you did not receive your code yet, please click on resend"]/android.widget.EditText[3]`)
-  }
-
-  get otpInput4() {
-    return $(`//android.view.ViewGroup[@content-desc="Login by e-mail, We sent an e-mail with a 5-digit code to: qa2@alfredus.co, Insert your code and click on “Submit Verification Code”. If you did not receive your code yet, please click on resend"]/android.widget.EditText[4]`)
-  }
-
-  get otpInput5() {
-    return $(`//android.view.ViewGroup[@content-desc="Login by e-mail, We sent an e-mail with a 5-digit code to: qa2@alfredus.co, Insert your code and click on “Submit Verification Code”. If you did not receive your code yet, please click on resend"]/android.widget.EditText[5]`)
+    return $(`(//android.widget.EditText[@text="*"])[1]`)
   }
 
   get submitVerificationCodeBtn() {
@@ -121,17 +105,8 @@ class LoginLocators {
     return $('android=new UiSelector().text("Thoughts")');
   }
   get groupScrollElement() {
-    return $('(//android.view.ViewGroup//android.widget.ScrollView//android.view.ViewGroup)[1]');
+    return '(//android.view.ViewGroup//android.widget.ScrollView//android.view.ViewGroup)[1]';
   }
-  // groups tab
-  
-  //// Home search button
-  //android.widget.TextView[contains(@text, "My Community")]/preceding-sibling::android.view.ViewGroup//android.widget.TextView
-
-  //android.widget.EditText[@text="Search connections"] fill
-  //android.widget.TextView[contains(@text, "My groups")]
-  //android.view.ViewGroup[@content-desc="Electric it"]
-  // 
 }
 
 module.exports = LoginLocators;

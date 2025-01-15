@@ -1,7 +1,7 @@
 exports.config = {
     runner: 'local',
     specs: [
-        "testcases/specs/login.spec.js",
+        "testcases/specs/login/login.spec.js",
     ],
     exclude: [],
 
@@ -30,13 +30,7 @@ exports.config = {
     reporters: ['spec'],
     mochaOpts: {
         ui: 'bdd',
-        timeout: 240000
+        timeout: 600000
     },
 
-    afterTest: async function (test, context, { error, result, duration, passed, retries }) {
-        if (passed) {
-            console.log(test.title, ' passed, taking screenshot');
-            await browser.takeScreenshot();
-        }
-    },
 };

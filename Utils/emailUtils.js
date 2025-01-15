@@ -1,113 +1,66 @@
-import LoginLocators from '../testcases/pageObjects/locators/login.locators';
-import { email, password } from './constants';
-const { remote } = require('webdriverio');
 const Imap = require('imap-simple');
-const { promisify } = require('util');
-const imapConfig = {
-  user: email,
-  password: password,
-  host: 'imap.gmail.com',
-  port: 993,
-  tls: true
-};
+const { email } = require('./constants');
 
-let otp = '';
+async function getEmailVerificationCode() {
+  const config = {
+    imap: {
+      user: email,
+      password: 'kceimbxuncrvbxcn',
+      host: 'imap.gmail.com',
+      port: 993,
+      tls: true,
+      tlsOptions: {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 15000,
+    }
+  };
+  let verificationCode = '';
+  let connection;
+  try {
+    connection = await Imap.connect(config);
+    await connection.openBox('INBOX');
 
-export async function fetchOtpFromEmail() {
-  const connection = await Imap.connect({ imap: imapConfig });
-  await connection.openBox('INBOX');
+    async function markEmailsForDeletion(criteria) {
+      const fetchOptions = { bodies: ['HEADER'], markSeen: false };
+      const messages = await connection.search(criteria, fetchOptions);
+      for (const message of messages) {
+        const uid = message.attributes.uid;
+        await connection.addFlags(uid, ['\\Deleted']);
+      }
+    }
+    await markEmailsForDeletion(['SEEN', ['FROM', 'RedBoxMe']]);
 
-  const searchCriteria = ['UNSEEN'];
-  const fetchOptions = { bodies: ['TEXT'], markSeen: true };
+    await connection.openBox('INBOX');
+    const searchCriteria = ['UNSEEN', ['OR', ['FROM', 'RedBoxMe'], ['FROM', 'RedBoxMe']]];
+    const fetchOptions = { bodies: ['TEXT'], markSeen: true };
+    const messages = await connection.search(searchCriteria, fetchOptions);
+    const latestMessage = messages[0];
 
-  const messages = await connection.search(searchCriteria, fetchOptions);
-
-  if (messages.length > 0) {
-    const body = messages[0].parts.filter(part => part.which === 'TEXT')[0].body;
-
-    const otpMatch = body.match(/\d{5}/);
-    if (otpMatch) {
-      otp = otpMatch[0];
-      console.log("OTP Found: " + otp);
-      return otp;
+    if (latestMessage) {
+      const parts = latestMessage.parts;
+      const text = parts[0]?.body;
+      const match = text.match(/\b\d{5}\b/);
+      verificationCode = match ? match[0] : '';
+    }
+    await markEmailsForDeletion(['SEEN', ['FROM', 'RedBoxMe']]);
+    await connection.openBox('INBOX');
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  } finally {
+    try {
+      if (connection) {
+        await connection.end();
+      }
+    } catch (error) {
+      console.error('Error closing connection:', error);
     }
   }
-
-  await connection.end();
-}
-
-export async function inputOtp(otp) {
-  const otpArray = otp.split('');
-  await (await $(LoginLocators.otpInput1)).setValue(otpArray[0]);
-  await driver.pause(1000);
-  await (await $(LoginLocators.otpInput2)).setValue(otpArray[1]);
-  await driver.pause(1000);
-  await (await $(LoginLocators.otpInput3)).setValue(otpArray[2]);
-  await driver.pause(1000);
-  await (await $(LoginLocators.otpInput4)).setValue(otpArray[3]);
-  await driver.pause(1000);
-  await (await $(LoginLocators.otpInput5)).setValue(otpArray[4]);
-  await driver.pause(1000);
+  return verificationCode;
 }
 
 
-// import LoginLocators from '../testcases/pageObjects/locators/login.locators';
-// import { email, password } from './constants';
-
-// const { remote } = require('webdriverio');
-// const Imap = require('imap-simple');
-// const { promisify } = require('util');
-// const imapConfig = {
-//   user: email,
-//   password: password,
-//   host: 'alfredus.co',
-//   port: 993,
-//   tls: true
-// };
-// let otp = '';
-
-// export async function fetchOtpFromEmail() {
-//   const imap = new Imap(imapConfig);
-//   const openBox = promisify(imap.openBox.bind(imap));
-
-//   await new Promise((resolve, reject) => {
-//     imap.once('error', reject);
-//     imap.once('end', resolve);
-//     imap.connect();
-//   });
-
-//   await openBox('INBOX');
-
-//   const searchCriteria = ['UNSEEN'];
-//   const fetchOptions = { bodies: ['TEXT'], markSeen: true };
-
-//   const messages = await promisify(imap.search.bind(imap))(searchCriteria, fetchOptions);
-
-//   if (messages.length > 0) {
-//     const body = messages[0].parts.filter(part => part.which === 'TEXT')[0].body;
-
-//     const otpMatch = body.match(/\d{5}/);
-//     if (otpMatch) {
-//       otp = otpMatch[0];  
-//       console.log("OTP Found: " + otp);
-//       return otp;
-//     }
-//   }
-
-//   imap.end();
-// }
-
-
-// export async function inputOtp(otp) {
-//   const otpArray = otp.split('');
-//   await (await $(LoginLocators.otpInput1)).setValue(otpArray[0]);
-//   await driver.pause(1000)
-//   await (await $(LoginLocators.otpInput2)).setValue(otpArray[1]);
-//   await driver.pause(1000)
-//   await (await $(LoginLocators.otpInput3)).setValue(otpArray[2]);
-//   await driver.pause(1000)
-//   await (await $(LoginLocators.otpInput4)).setValue(otpArray[3]);
-//   await driver.pause(1000)
-//   await (await $(LoginLocators.otpInput5)).setValue(otpArray[4]);
-//   await driver.pause(1000)
-// }
+module.exports = {
+  getEmailVerificationCode
+};

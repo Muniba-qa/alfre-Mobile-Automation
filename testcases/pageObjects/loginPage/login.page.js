@@ -1,6 +1,6 @@
 const allure = require("@wdio/allure-reporter").default;
 const { email } = require("../../../Utils/constants.js");
-const { fetchOtpFromEmail, inputOtp } = require("../../../Utils/emailUtils.js");
+const emailUtils = require("../../../Utils/emailUtils.js");
 const { waitForElementDisplayed, scrollByUiLocator, scrollInsideElement, getRandomSentence, displayNameSentences, extendedNameSentences, wishToShareSentences } = require("../../../Utils/myUtils.js");
 const LoginLocators = require("./login.locators.js");
 
@@ -37,24 +37,34 @@ const loginToAccount = async () => {
   allure.addStep('Click on "SEND CODE" button.');
   await loginLocators.sendCodeBtn.click();
 
-  // allure.addStep('Fetching OTP from email.');
-  // const otp = await fetchOtpFromEmail();
+  await driver.pause(5000)
+  allure.addStep('Fetching OTP from email.');
+  const otp = await emailUtils.getEmailVerificationCode()
+  await driver.pause(1000)
 
-  // allure.addStep('Input OTP into code fields.');
-  // if (otp) {
-  //   await inputOtp(otp);
-  // }
+  allure.addStep('Input OTP into code fields.');
+  if (otp) {
+    const otpArray = otp.split('');
+    await loginLocators.otpInput1.setValue(otpArray[0]);
+    await driver.pause(200)
+    await loginLocators.otpInput1.setValue(otpArray[1]);
+    await driver.pause(200)
+    await loginLocators.otpInput1.setValue(otpArray[2]);
+    await driver.pause(200)
+    await loginLocators.otpInput1.setValue(otpArray[3]);
+    await driver.pause(200)
+    await loginLocators.otpInput1.setValue(otpArray[4]);
+    await driver.pause(200)
+  }
 
-  // allure.addStep('Click on "SUBMIT VERIFICATION CODE" button.');
-  // await loginLocators.submitVerificationCodeBtn.click();
+  allure.addStep('Click on "SUBMIT VERIFICATION CODE" button.');
+  await loginLocators.submitVerificationCodeBtn.click();
 
   allure.addStep('Verify Successful login.');
   await waitForElementDisplayed(loginLocators.plusBtnBottomNav, "");
-
-
 }
 
-const createGroup = async () => {
+const createGroup = async (status) => {
 
   await waitForElementDisplayed(loginLocators.plusBtnBottomNav, "");
   allure.addStep('Click on "plus" button.');
@@ -94,8 +104,10 @@ const createGroup = async () => {
 
   await loginLocators.howToRedBoxText.click();
   await scrollByUiLocator(loginLocators.nextBtn)
-  await waitForElementDisplayed(loginLocators.groupSwitch, "Group switch")
-  await loginLocators.groupSwitch.click();
+  if (status == "private") {
+    await waitForElementDisplayed(loginLocators.groupSwitch, "Group switch")
+    await loginLocators.groupSwitch.click();
+  }
 
   await waitForElementDisplayed(loginLocators.nextBtn, "Next button");
   allure.addStep('Click on "next " button.');
@@ -115,34 +127,40 @@ const createGroup = async () => {
   allure.addStep('Click on "create Group" button.');
   await loginLocators.createGroupBtn.click();
 
+  await scrollInsideElement(loginLocators.groupScrollElement);
+
   await waitForElementDisplayed(loginLocators.seeMyGroupBtn, "see my Group button");
   allure.addStep('Click on "see my Group" button.');
   await loginLocators.seeMyGroupBtn.click();
-  
+  await driver.pause(5000)
+
   await waitForElementDisplayed(loginLocators.groupMoreOptionBtn, "Group more options button");
   allure.addStep('Click on "more option" button.');
   await loginLocators.groupMoreOptionBtn.click();
-  
+
   await waitForElementDisplayed(loginLocators.editProfileOption, "Edit Profile option");
   allure.addStep('Click on "more option" button.');
   await loginLocators.editProfileOption.click();
 
   await scrollByUiLocator(loginLocators.saveBtn)
-  await waitForElementDisplayed(loginLocators.groupSwitch, "");
-  allure.addStep('Click on "group" switch.');
-  await loginLocators.groupSwitch.click();
 
-  await waitForElementDisplayed(loginLocators.saveBtn, "");
-  allure.addStep('Click on "Save" button.');
-  await loginLocators.saveBtn.click();
-  
-  await driver.pause(5000)
+  const isVisible = await loginLocators.groupSwitch.isDisplayed();
+  if (isVisible) {
+    allure.addStep('Click on "group" switch.');
+    await loginLocators.groupSwitch.click();
+
+    allure.addStep('Click on "Save" button.');
+    await loginLocators.saveBtn.click();
+  }else{
+    await loginLocators.backArrowBtn.click();
+  }
+
+  await driver.pause(3000)
   await waitForElementDisplayed(loginLocators.thoughtsTab, "");
 
   await scrollInsideElement(loginLocators.groupScrollElement);
 
 }
-
 
 
 module.exports = {
