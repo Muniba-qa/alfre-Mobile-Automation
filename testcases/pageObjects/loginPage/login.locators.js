@@ -90,11 +90,11 @@ class LoginLocators {
   get groupSwitch() {
     return $('//android.view.ViewGroup//android.widget.Switch');
   }
-  
+
   get privateText() {
     return $('android=new UiSelector().text("PRIVATE")');
   }
-  
+
   get groupMoreOptionBtn() {
     return $('(//android.view.ViewGroup//android.view.ViewGroup//com.horcrux.svg.SvgView)[1]');
   }
@@ -106,6 +106,27 @@ class LoginLocators {
   }
   get groupScrollElement() {
     return '(//android.view.ViewGroup//android.widget.ScrollView//android.view.ViewGroup)[1]';
+  }
+  get testigThoughtsPostingFromProfileTxt() {
+    return '//android.view.ViewGroup[@content-desc="TESTING THOUGHT POSTING FROM PROFILE"]'
+  }
+  get seemoreLink() {
+    return '(//android.view.ViewGroup[@content-desc="See more, "])[2]'
+  }
+  get allSection() {
+    return '//android.widget.Button[@content-desc="All"]'
+  }
+  get thoughtTabBtn(){
+    return '//android.widget.Button[@content-desc="Thoughts"]'
+  }
+  get seeMoreElementCount(){
+    return "(//android.view.ViewGroup[@content-desc='See more, '])[1]"
+  }
+  get viewAllComments(){
+    return "//android.view.ViewGroup[contains(@content-desc, 'comments')]/android.widget.TextView"
+  }
+  get parentCommnetElement(){
+    return "((//android.view.ViewGroup[contains(@resource-id, 'avatar')]/..)[not(.//android.view.ViewGroup[contains(@content-desc, 'See more')])])[2]"
   }
 }
 

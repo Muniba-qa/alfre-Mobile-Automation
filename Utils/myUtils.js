@@ -1,9 +1,11 @@
 const allure = require("@wdio/allure-reporter").default;
 
-async function scrollByUiLocator(element) {
-    const locator = await element.selector;
-    const modifiedLocator = locator.replace('android=', '');
-    await $(`android=new UiScrollable(new UiSelector().scrollable(true)).scrollIntoView(${modifiedLocator})`);
+
+function getIssueKeyFromTestName(str) {
+    console.log("resultresult" + str);
+    const parts = str.split('|');
+    const result = parts[1];
+    console.log("resultresult" + result);
 }
 
 async function waitForElementDisplayed(element, buttonName) {
@@ -20,8 +22,8 @@ async function waitForElementDisplayed(element, buttonName) {
 
 async function scrollInsideElement(elementSelector, scrollRatio = 0.4, duration = 1200) {
     const element = await $(elementSelector);
-    const { x, y } = await element.getLocation(); 
-    const { width, height } = await element.getSize(); 
+    const { x, y } = await element.getLocation();
+    const { width, height } = await element.getSize();
     const midpoint = {
         x: Math.floor(width * 0.5),
         y: Math.floor(height * 0.5),
@@ -45,6 +47,68 @@ async function scrollInsideElement(elementSelector, scrollRatio = 0.4, duration 
 
     await driver.releaseActions();
 }
+async function scrollElementByXpath(elementSelector, duration = 650) {
+    let elementVisible = false;
+
+    while (!elementVisible) {
+        const element = await $(elementSelector);
+        const vis = await element.isDisplayed();
+
+        if (vis) {
+            elementVisible = true;
+        } else {
+            await driver.performActions([{
+                type: 'pointer',
+                id: 'finger1',
+                parameters: { pointerType: 'touch' },
+                actions: [
+                    { type: 'pointerMove', duration: 0, x: 500, y: 1000 },
+                    { type: 'pointerDown', button: 0 },
+                    { type: 'pause', duration: 200 },
+                    { type: 'pointerMove', duration, x: 0, y: -300 }, 
+                    { type: 'pointerUp', button: 0 }
+                ]
+            }]);
+
+            await driver.releaseActions();
+
+        }
+
+    }
+
+}
+
+
+async function scrollElementByXpath2(elementSelector, duration = 650) {
+    let elementVisible = false;
+
+    while (!elementVisible) {
+        const element = await $(elementSelector);
+
+        try {
+            await element.waitForDisplayed({ timeout: 2000, reverse: false });
+            elementVisible = true;
+        } catch (e) {
+            await driver.performActions([{
+                type: 'pointer',
+                id: 'finger1',
+                parameters: { pointerType: 'touch' },
+                actions: [
+                    { type: 'pointerMove', duration: 0, x: 0, y: 1000 },
+                    { type: 'pointerDown', button: 0 },
+                    { type: 'pause', duration: 200 },
+                    { type: 'pointerMove', duration, x: 0, y: -600 },
+                    { type: 'pointerUp', button: 0 }
+                ]
+            }]);
+
+            await driver.releaseActions();
+
+            await driver.pause(1000);
+        }
+    }
+}
+
 
 const displayNameSentences = [
     'Innovators Collective',
@@ -108,13 +172,39 @@ function getRandomSentence(array) {
     const randomIndex = Math.floor(Math.random() * array.length);
     return array[randomIndex];
 }
+const scrollElementByText = async (text) => {
+    await driver.$(`android=new UiScrollable(new UiSelector().scrollable(true).instance(1)).setAsVerticalList().scrollForward().scrollIntoView(new UiSelector().text("${text}").instance(0))`);
+}
+
+const scrollToGetParentElement = async (parentElement) => {
+    const parentViewGroups = await $$(parentElement);
+    console.log('parentView length', parentViewGroups.length)
+
+    for (let parent of parentViewGroups) {
+
+        const childViewGroups = await parent.$$('android.view.ViewGroup');
+
+        console.log('childViewGroups length', childViewGroups.length);
+        console.log('text***********', childViewGroups.getText());
+
+        if (childViewGroups.length < 10) {
+            await scrollElementByXpath(childViewGroups);
+            console.log('Scrolled into a parent ViewGroup with less than 10 children');
+            break;
+        }
+    }
+}
+
 module.exports = {
-    scrollByUiLocator,
     waitForElementDisplayed,
     scrollInsideElement,
     getRandomSentence,
     displayNameSentences,
     extendedNameSentences,
-    wishToShareSentences
-
+    wishToShareSentences,
+    getIssueKeyFromTestName,
+    scrollElementByText,
+    scrollElementByXpath,
+    scrollToGetParentElement,
+    scrollElementByXpath2
 }

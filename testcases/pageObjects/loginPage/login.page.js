@@ -1,7 +1,9 @@
 const allure = require("@wdio/allure-reporter").default;
+const { click } = require("appium-uiautomator2-driver/build/lib/commands/element.js");
+const { UiScrollable, UiSelector } = require('appium-uiautomator2-driver');
 const { email } = require("../../../Utils/constants.js");
 const emailUtils = require("../../../Utils/emailUtils.js");
-const { waitForElementDisplayed, scrollByUiLocator, scrollInsideElement, getRandomSentence, displayNameSentences, extendedNameSentences, wishToShareSentences } = require("../../../Utils/myUtils.js");
+const { waitForElementDisplayed, scrollInsideElement, getRandomSentence, scrollElementByText, scrollElementByXpath,scrollToGetParentElement, displayNameSentences,scroll, extendedNameSentences, wishToShareSentences, scrollElementByXpath2 } = require("../../../Utils/myUtils.js");
 const LoginLocators = require("./login.locators.js");
 
 
@@ -62,6 +64,7 @@ const loginToAccount = async () => {
 
   allure.addStep('Verify Successful login.');
   await waitForElementDisplayed(loginLocators.plusBtnBottomNav, "");
+  await driver.pause(2000)
 }
 
 const createGroup = async (status) => {
@@ -151,7 +154,7 @@ const createGroup = async (status) => {
 
     allure.addStep('Click on "Save" button.');
     await loginLocators.saveBtn.click();
-  }else{
+  } else {
     await loginLocators.backArrowBtn.click();
   }
 
@@ -162,9 +165,57 @@ const createGroup = async (status) => {
 
 }
 
+const seeMoreLinkVerificationForMoreThanFiveComments = async () => {
+  const loginLocators = new LoginLocators();
+  allure.addStep('Click on All section');
+  await $(loginLocators.allSection).waitForDisplayed({ timeout: 20000 });
+  await $(loginLocators.allSection).click()
+  allure.addStep('Scroll in to post with more than five comments.');
+  await driver.pause(3000)
+  await $(
+    "android= new UiScrollable(new UiSelector().scrollable(true)).scrollToEnd(1,3)"
+  );
+  // await scrollByUiLocator(loginLocators.testigThoughtsPostingFromProfileTxt)
+//   await loginLocators.testigThoughtsPostingFromProfileTxt.scrollIntoView({
+//     direction: 'down',
+//     maxScrolls: 5,
+//     duration: 1500,
+//     percent: 0.95
+// });`
+
+// Define the start and end points for the swipe
+const start = { x: 514, y: 73 }; // Starting coordinates
+const end = { x: 422, y: 1965 };   // Ending coordinates
+
+// Perform the swipe using touch actions
+// await driver.performActions([{
+//   type: 'pointer',
+//   id: 'finger1',
+//   parameters: { pointerType: 'touch' },
+//   actions: [
+//     { type: 'pointerMove', duration: 0, x: start.x, y: start.y },
+//     { type: 'pointerDown', button: 0 },
+//     { type: 'pause', duration: 100 },
+//     { type: 'pointerMove', duration: 1000, origin: 'pointer', x: end.x, y: end.y },
+//     { type: 'pointerUp', button: 0 }
+//   ]
+// }]);
+
+// Release all actions after completion
+// await driver.releaseActions();
+
+  await $(loginLocators.testigThoughtsPostingFromProfileTxt).waitForDisplayed({ timeout: 20000 });
+
+  allure.addStep('Verify that see more link is visible.');
+
+  await $(loginLocators.seemoreLink).waitForDisplayed({ timeout: 20000 });
+
+
+}
 
 module.exports = {
   joinOurWaitList,
   createGroup,
-  loginToAccount
+  loginToAccount,
+  seeMoreLinkVerificationForMoreThanFiveComments,
 };
