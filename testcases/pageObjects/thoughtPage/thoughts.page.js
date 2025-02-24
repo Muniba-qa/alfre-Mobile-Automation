@@ -2,6 +2,7 @@
 const ThoughtsLocators = require('./thoughts.locators');
 const { scrollElementByXpath, scrollElementByXpath2 } = require("../../../Utils/myUtils.js");
 const allure = require("@wdio/allure-reporter").default;
+const { remote } = require('webdriverio');
 
 const verifySeeMoreInThoughts = async () => {
   
@@ -78,8 +79,142 @@ const verifySeeMoreAdditionalContentInThoughts = async () => {
     await $(ThoughtsLocators.reflectionsText).waitForDisplayed();
 
 }
+
+const deleteThoughtPost = async () => {
+
+    allure.addStep('click on the show translated post');
+    await $(ThoughtsLocators.showTranslationTitle).waitForDisplayed();
+    await $(ThoughtsLocators.showTranslationTitle).click({force:true});
+
+    allure.addStep('click on the three dot button of the post');
+    await $(ThoughtsLocators.postOptionBtn).waitForDisplayed();
+    await $(ThoughtsLocators.postOptionBtn).click();
+
+    allure.addStep('click on the delete button of the popup');
+    await $(ThoughtsLocators.deletePostBtn).waitForDisplayed();
+    await $(ThoughtsLocators.deletePostBtn).click();
+
+    allure.addStep('click on the delete thought button of the popup');
+    await $(ThoughtsLocators.deleteThoughtBtn).waitForDisplayed();
+    await $(ThoughtsLocators.deleteThoughtBtn).click();
+
+}
+const createThoughtPost = async (postTitle) => {
+
+    await browser.pause(5000);
+
+    allure.addStep('click on the menu profile button');
+    await $(ThoughtsLocators.profileButton).waitForDisplayed();
+    await $(ThoughtsLocators.profileButton).click();
+
+    allure.addStep('click on the Thoughts button');
+    await $(ThoughtsLocators.createPostThoughtTabBtn).waitForDisplayed();
+    await $(ThoughtsLocators.createPostThoughtTabBtn).click();
+
+    allure.addStep('click on the share your thoughts field');
+    await $(ThoughtsLocators.shareYourThoughtsField).waitForDisplayed();
+    await $(ThoughtsLocators.shareYourThoughtsField).click();
+
+    allure.addStep(`Enter ${postTitle} text in the share thought field`);
+    await $(ThoughtsLocators.shareYourThoughtsEditField).waitForDisplayed();
+    await $(ThoughtsLocators.shareYourThoughtsEditField).clearValue();
+    await $(ThoughtsLocators.shareYourThoughtsEditField).setValue(postTitle);
+
+    allure.addStep('click on the share button of the post');
+    await $(ThoughtsLocators.shareBtn).waitForDisplayed();
+    await $(ThoughtsLocators.shareBtn).click();
+
+    await browser.pause(5000);
+
+
+}
+const verifyShowTranslationFeatureInThoughts = async () => {
+
+    await createThoughtPost('Este es mi post.');
+
+    allure.addStep('verify that show translation text is visible on the other language post');
+    await scrollElementByXpath2(ThoughtsLocators.showTranslationLink); 
+
+    allure.addStep('Click on the show translation button of the post');
+    await $(ThoughtsLocators.showTranslationLink).waitForDisplayed();
+    await $(ThoughtsLocators.showTranslationLink).click();
+
+    await browser.pause(6000);
+
+    allure.addStep('verify that the post text translated correctly');
+    let translatedText = await $(ThoughtsLocators.showOriginalTitleText).getText();
+    await expect(translatedText).toEqual('This is my post.');
+
+    await deleteThoughtPost();
+
+};
+
+const createCommentForThoughts = async (comment) => {
+
+    allure.addStep('Verify that comment section is visible');
+    await $(ThoughtsLocators.reflectionText).waitForDisplayed();
+    await $(ThoughtsLocators.reflectionText).click();
+
+    allure.addStep(`Enter ${comment} in the comment field`);
+    await $(ThoughtsLocators.addCommentField).waitForDisplayed();
+    await $(ThoughtsLocators.addCommentField).clearValue();
+    await $(ThoughtsLocators.addCommentField).setValue(comment);
+
+    allure.addStep('click on the send comment button');
+    await $(ThoughtsLocators.commentSendBtn).waitForDisplayed();
+    await $(ThoughtsLocators.commentSendBtn).click();
+}
+
+const verifyShowTranslationFeatureInThoughtsComments = async () => {
+
+    await createThoughtPost('Este es mi post.');
+
+    allure.addStep('verify that show translation text is visible on the other language post');
+    await scrollElementByXpath2(ThoughtsLocators.showTranslationLink); 
+
+    allure.addStep('click on the comments icon of the newly created post');
+    await $(ThoughtsLocators.createdPostCommentBtn).waitForDisplayed();
+    await $(ThoughtsLocators.createdPostCommentBtn).click();
+
+    await createCommentForThoughts('Este es mi comentario');
+
+    await browser.pause(5000);
+
+    allure.addStep('verify that "Show Translation" text is visible under the comment.');
+    await $(ThoughtsLocators.commentShowTranslationBtn).waitForDisplayed();
+
+    allure.addStep('Click on the Show Translation text of the comment');
+    await $(ThoughtsLocators.commentShowTranslationBtn).click();
+
+    await browser.pause(5000);
+
+    allure.addStep('verify the comment is correctly translated.');
+    let commentText = await $(ThoughtsLocators.commentText).getText();
+    await expect(commentText).toEqual('This is my comment');
+
+    allure.addStep('Click on the three dot button of the comment');
+    await $(ThoughtsLocators.deleteCommentDotBtn).waitForDisplayed();
+    await $(ThoughtsLocators.deleteCommentDotBtn).click();
+
+    allure.addStep('Click on the delete button of the comment popup');
+    await $(ThoughtsLocators.deleteCommentBtn).waitForDisplayed();
+    await $(ThoughtsLocators.deleteCommentBtn).click();
+
+    allure.addStep('Click on the cross button of the comment popup');
+    await $(ThoughtsLocators.crossBtnOfCommentPopup).waitForDisplayed();
+    await $(ThoughtsLocators.crossBtnOfCommentPopup).click();
+    
+    await browser.pause(3000);
+
+    await deleteThoughtPost();
+
+}
+
+
 module.exports = {
     verifySeeMoreInThoughts,
     verifySeeMoreNotExistInThoughts,
-    verifySeeMoreAdditionalContentInThoughts
+    verifySeeMoreAdditionalContentInThoughts,
+    verifyShowTranslationFeatureInThoughts,
+    verifyShowTranslationFeatureInThoughtsComments
 }
