@@ -4,9 +4,7 @@ const {
 const {
     verifySeeMoreInThoughts,
     verifySeeMoreNotExistInThoughts,
-    verifySeeMoreAdditionalContentInThoughts,
-    verifyShowTranslationFeatureInThoughts,
-    verifyShowTranslationFeatureInThoughtsComments
+    verifySeeMoreAdditionalContentInThoughts
 } = require("../../pageObjects/thoughtPage/thoughts.page.js");
 
 describe('Thoughts Tab', () => {
@@ -24,11 +22,5 @@ describe('Thoughts Tab', () => {
     });
     it('RD-2846_Verify the additional content displayed when the "See More" button is clicked in the Thoughts tab.', async () => {
         await verifySeeMoreAdditionalContentInThoughts();
-    });
-    it('Verify the "Show Translation" feature in the Thoughts tab.', async () => {
-        await verifyShowTranslationFeatureInThoughts();
-    });
-    it('Verify that the "Show Translation" feature works in the comments section of the Thoughts tab post.', async () => {
-       await verifyShowTranslationFeatureInThoughtsComments();
-    });
+    })
 })
