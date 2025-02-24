@@ -26,7 +26,7 @@ exports.config = {
             "appium:platformVersion": "14.0",
             "appium:orientation": "PORTRAIT",
             "appium:automationName": "UiAutomator2",
-            "appium:app": "apps/application-38612962-d55a-4eef-9b8a-8c8f1560c64b.apk",
+            "appium:app": "apps/application-053b93ec-273f-4b55-91bd-3dd4413160a6.apk",
             "appium:autoAcceptAlerts": true,
             "appium:autoGrantPermissions": true,
             "appium:newCommandTimeout": 10000

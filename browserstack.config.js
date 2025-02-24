@@ -52,6 +52,7 @@ exports.config = {
 
   updateJob: false,
   specs: [
+    "testcases/specs/contributions/contributions.spec.js",
     "testcases/specs/thoughts/thoughts.spec.js",
   ],
   exclude: [],
